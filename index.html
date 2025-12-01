@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover"
+  />
+  <title>We’re Launching Something New</title>
+  <meta
+    name="description"
+    content="Countdown to our new website launch. Explore new features for Clients and Admins and get notified."
+  />
+  <meta name="theme-color" content="#1a2b49" />
+  <style>
+    /* Minimal reset */
+    *, *::before, *::after { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+    body { margin: 0; line-height: 1.5; }
+    img, svg, video { max-width: 100%; height: auto; display: block; }
+    button, input { font: inherit; }
+    :focus-visible { outline: 3px solid #5B9FFF; outline-offset: 2px; }
+
+    /* Palette and tokens */
+    :root {
+      --primary-color: #1a2b49;
+      --secondary-color: #ff7e00;
+      --text-color: #333333;
+      --light-gray: #f5f5f5;
+      --medium-gray: #e0e0e0;
+      --dark-gray: #888888;
+      --white: #ffffff;
+
+      --brand-primary: var(--primary-color);
+      --brand-accent: var(--secondary-color);
+      --brand-border: var(--medium-gray);
+      --text-main: var(--text-color);
+      --text-muted: var(--dark-gray);
+
+      /* Responsive type (no animations) */
+      --fs-hero: clamp(1.5rem, 1.2rem + 1.8vw, 2.6rem);
+      --fs-body: clamp(0.95rem, 0.9rem + 0.3vw, 1.125rem);
+      --fs-h2: clamp(1.125rem, 1rem + 0.8vw, 1.5rem);
+      --fs-h3: clamp(1rem, 0.95rem + 0.5vw, 1.125rem);
+
+      --radius-md: 12px;
+      --radius-lg: 16px;
+
+      --container-max: 1200px;
+      --container-pad: clamp(16px, 4vw, 28px);
+      --grid-gap: clamp(12px, 2.4vw, 18px);
+      --card-pad: clamp(14px, 2.4vw, 18px);
+    }
+
+    html, body { height: 100%; }
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+      color: var(--text-main);
+      font-size: var(--fs-body);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      background: #0b1424; /* fallback behind video */
+    }
+
+    /* Background video layer */
+    .bg-video-wrapper {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      background: #0b1424; /* fallback color */
+    }
+    .bg-video-wrapper::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4); /* dark overlay for contrast */
+      z-index: 1;
+    }
+    .bg-video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+      opacity: 0.6; /* 60% opacity */
+      z-index: 0;
+    }
+
+    /* Foreground container */
+    .container {
+      position: relative;
+      z-index: 2;
+      max-width: var(--container-max);
+      margin: 0 auto;
+      padding-inline: var(--container-pad);
+    }
+
+    header { padding: clamp(24px, 4vw, 48px) 0 clamp(16px, 3vw, 24px); }
+    .badge {
+      display: inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: rgba(255,126,0,0.16);
+      color: #fff;
+      border: 1px solid rgba(255,126,0,0.4);
+      font-weight: 700;
+      font-size: clamp(0.75rem, 0.7rem + 0.3vw, 0.9rem);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: clamp(16px, 3vw, 32px);
+      align-items: center;
+    }
+    .hero h1 {
+      margin: 12px 0 8px;
+      font-size: var(--fs-hero);
+      line-height: 1.1;
+      color: #fff; /* ensure readable on video */
+      word-break: break-word;
+    }
+    .hero p {
+      color: #e9eef6;
+      margin: 0 0 12px;
+    }
+
+    /* Countdown */
+    .countdown {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(64px, 1fr));
+      gap: clamp(8px, 2vw, 12px);
+      margin: 14px 0 clamp(16px, 3vw, 24px);
+      max-width: 520px;
+    }
+    .time-card {
+      background: rgba(255,255,255,0.92);
+      border: 1px solid var(--brand-border);
+      border-radius: var(--radius-md);
+      padding: clamp(10px, 1.6vw, 14px) clamp(12px, 2vw, 16px);
+      text-align: center;
+      min-height: 76px;
+      display: grid;
+      align-content: center;
+      backdrop-filter: blur(2px) saturate(120%);
+      -webkit-backdrop-filter: blur(2px) saturate(120%);
+    }
+    .time-card .value {
+      font-size: clamp(1.25rem, 1.1rem + 1vw, 1.75rem);
+      font-weight: 800;
+      color: var(--brand-primary);
+      line-height: 1.1;
+    }
+    .time-card .label {
+      font-size: clamp(0.65rem, 0.6rem + 0.3vw, 0.75rem);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--dark-gray);
+    }
+
+    /* Sections */
+    section { padding: clamp(20px, 4vw, 32px) 0; }
+    .section-title {
+      display: flex; align-items: center; gap: 10px; margin-bottom: clamp(12px, 2.6vw, 16px);
+      flex-wrap: wrap;
+    }
+    .section-title h2 { margin: 0; font-size: var(--fs-h2); color: #fff; }
+    .pill {
+      display: inline-block;
+      padding: 4px 8px;
+      border-radius: 999px;
+      font-size: clamp(0.7rem, 0.65rem + 0.3vw, 0.8rem);
+      font-weight: 700;
+      background: rgba(255,255,255,0.14);
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border: 1px solid rgba(255,255,255,0.25);
+    }
+
+    .cards {
+      display: grid;
+      gap: var(--grid-gap);
+      grid-template-columns: repeat(12, 1fr);
+    }
+    .cards > .card { grid-column: span 12; }
+    @media (min-width: 640px) { .cards > .card { grid-column: span 6; } }
+    @media (min-width: 992px) { .cards > .card { grid-column: span 4; } }
+
+    .card {
+      background: rgba(255,255,255,0.96);
+      border: 1px solid var(--brand-border);
+      border-radius: var(--radius-lg);
+      padding: var(--card-pad);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      min-height: 112px;
+    }
+    .card h3 { margin: 0 0 6px; font-size: var(--fs-h3); color: var(--brand-primary); line-height: 1.25; }
+    .card p { margin: 0; color: var(--text-muted); word-break: break-word; }
+
+    /* Footer */
+    footer { padding: clamp(20px, 3.6vw, 28px) 0 clamp(28px, 4vw, 48px); color: #e1e6ee; font-size: 0.95rem; }
+    .footer-row {
+      display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+    }
+
+    /* Responsive hero layout */
+    @media (max-width: 1024px) {
+      .hero { grid-template-columns: 1fr; }
+      .hero-visual { order: -1; }
+    }
+
+    /* Remove animations site-wide explicitly */
+    * { animation: none !important; transition: none !important; }
+  </style>
+</head>
+<body>
+  <!-- Background video -->
+  <div class="bg-video-wrapper" aria-hidden="true">
+    <video class="bg-video" autoplay muted loop playsinline preload="auto">
+      <source src="VIDEO_SRC.mp4" type="video/mp4" />
+      <!-- Optional WebM for better compression -->
+      <!-- <source src="VIDEO_SRC.webm" type="video/webm" /> -->
+    </video>
+  </div>
+
+  <div class="container">
+    <header>
+      <span class="badge" aria-label="Launch announcement">New Version • Coming Soon</span>
+      <div class="hero">
+        <div>
+          <h1>We’re almost ready.</h1>
+          <p>Our new experience is built for speed, clarity, and control—tailored for Clients and Admins.</p>
+
+          <!-- Countdown -->
+          <div class="countdown" role="timer" aria-live="polite" aria-atomic="true">
+            <div class="time-card">
+              <div class="value" id="days">00</div>
+              <div class="label">Days</div>
+            </div>
+            <div class="time-card">
+              <div class="value" id="hours">00</div>
+              <div class="label">Hours</div>
+            </div>
+            <div class="time-card">
+              <div class="value" id="minutes">00</div>
+              <div class="label">Minutes</div>
+            </div>
+            <div class="time-card">
+              <div class="value" id="seconds">00</div>
+              <div class="label">Seconds</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right column visual (optional, can remove if video suffices) -->
+        <div class="hero-visual" aria-hidden="true">
+          <svg width="100%" height="260" viewBox="0 0 640 260" fill="none" preserveAspectRatio="xMidYMid meet">
+            <rect x="0" y="0" width="640" height="260" rx="16" fill="url(#g)"/>
+            <defs>
+              <linearGradient id="g" x1="0" y1="0" x2="640" y2="260" gradientUnits="userSpaceOnUse">
+                <stop stop-color="var(--brand-primary)" stop-opacity="0.12"/>
+                <stop offset="1" stop-color="var(--brand-accent)" stop-opacity="0.18"/>
+              </linearGradient>
+            </defs>
+            <g opacity="0.6">
+              <circle cx="80" cy="200" r="40" fill="var(--brand-accent)"/>
+              <circle cx="540" cy="60" r="28" fill="var(--brand-primary)"/>
+              <rect x="160" y="80" width="320" height="100" rx="12" fill="white" opacity="0.85"/>
+            </g>
+          </svg>
+        </div>
+      </div>
+    </header>
+
+    <!-- Client Features FIRST -->
+    <section>
+      <div class="section-title">
+        <span class="pill">For Clients</span>
+        <h2>Smoother, faster, and more intuitive</h2>
+      </div>
+      <div class="cards">
+        <article class="card">
+          <h3>Modern UI</h3>
+          <p>Cleaner navigation with faster load times and mobile-first layouts.</p>
+        </article>
+        <article class="card">
+          <h3>Chat with us directly</h3>
+          <p>Reach our team inside the site—no WhatsApp required.</p>
+        </article>
+        <article class="card">
+          <h3>Realtime Notifications</h3>
+          <p>Stay updated with email, SMS, or in-app alerts—customize what matters.</p>
+        </article>
+        <article class="card">
+          <h3>Tour updates, quickly and in detail</h3>
+          <p>Get every tour’s changes, inclusions, pricing, and availability in one place.</p>
+        </article>
+        <article class="card">
+          <h3>New Guide Center</h3>
+          <p>Browse guides, tips, and how‑tos to plan and book with confidence.</p>
+        </article>
+        <article class="card">
+          <h3>No logins needed</h3>
+          <p>Access key information and requests without creating an account.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- Admin Features SECOND -->
+    <section>
+      <div class="section-title">
+        <span class="pill">For Admins</span>
+        <h2>Control, visibility, and organization</h2>
+      </div>
+      <div class="cards">
+        <article class="card">
+          <h3>Unified Admin Dashboard</h3>
+          <p>Key metrics, alerts, and actions in a single view with deep filters and saved segments.</p>
+        </article>
+        <article class="card">
+          <h3>Role-Based Access</h3>
+          <p>Granular permissions for teams, audit logs, and approval flows to keep governance tight.</p>
+        </article>
+        <article class="card">
+          <h3>Organized visa process</h3>
+          <p>Track documents, statuses, and deadlines with clear steps and reminders.</p>
+        </article>
+        <article class="card">
+          <h3>Bulk Operations</h3>
+          <p>Edit, import, and export at scale with conflict checks and rollback protection.</p>
+        </article>
+        <article class="card">
+          <h3>Advanced Reporting</h3>
+          <p>Custom reports, scheduled sends, and CSV/BI exports for deeper analysis.</p>
+        </article>
+        <article class="card">
+          <h3>Security Enhancements</h3>
+          <p>SSO, enforced MFA, IP allowlists, and session controls built-in.</p>
+        </article>
+      </div>
+    </section>
+
+    <footer>
+      <div class="footer-row">
+        <div>
+          © <span id="year"></span> Ceylon Edutourism PVT LTD. All rights reserved.
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    // == Launch: 1st September, local time at 10:00 ==
+    const thisYear = new Date().getFullYear();
+    const launchAt = new Date(`${thisYear}-09-01T10:00:00`);
+    const nowCheck = new Date();
+    if (nowCheck > launchAt) launchAt.setFullYear(thisYear + 1);
+
+    // Countdown logic
+    const $days = document.getElementById('days');
+    const $hours = document.getElementById('hours');
+    const $minutes = document.getElementById('minutes');
+    const $seconds = document.getElementById('seconds');
+
+    function updateCountdown() {
+      if (!($days && $hours && $minutes && $seconds)) return;
+
+      const now = Date.now();
+      const diff = launchAt.getTime() - now;
+
+      if (diff <= 0) {
+        $days.textContent = '00';
+        $hours.textContent = '00';
+        $minutes.textContent = '00';
+        $seconds.textContent = '00';
+        const badge = document.querySelector('.badge');
+        if (badge) badge.textContent = 'We’re Live!';
+        clearInterval(timer);
+        return;
+      }
+
+      const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+      $days.textContent = String(d).padStart(2, '0');
+      $hours.textContent = String(h).padStart(2, '0');
+      $minutes.textContent = String(m).padStart(2, '0');
+      $seconds.textContent = String(s).padStart(2, '0');
+    }
+    const timer = setInterval(updateCountdown, 1000);
+    updateCountdown();
+
+    // Year
+    (function setYear(){
+      const y = document.getElementById('year');
+      if (y) y.textContent = new Date().getFullYear();
+    }());
+  </script>
+</body>
+</html>
